@@ -1,7 +1,7 @@
 # local-tools 跨平台仓库与 Claude RC 自动启动设计
 
 日期：2026-09-29  
-状态：待用户书面复核  
+状态：已批准并实施
 首期平台：macOS
 
 ## 1. 背景与目标
@@ -72,7 +72,8 @@ curl -fsSL https://raw.githubusercontent.com/tianweichao92/local-tools/main/tool
 
 - `--workdir PATH`：Remote Control 的工作目录，默认当前登录用户主目录。
 - `--dry-run`：仅输出探测结果和计划写入位置，不修改本机。
-- `--no-start`：完成文件安装和 LaunchAgent 注册，但不立即触发一次启动。
+- `--no-start`：完成文件安装并写入 LaunchAgent 文件，但不立即触发一次启动。
+- `--no-start` 的具体行为是只写入 `~/Library/LaunchAgents` 文件，不在当前会话执行 `launchctl bootstrap`；下次图形登录时才加载。
 - `--force`：仅在目标位置存在无法确认归属的同名文件时允许显式覆盖；默认不覆盖。
 - `--help`：显示用法。
 
@@ -80,7 +81,7 @@ curl -fsSL https://raw.githubusercontent.com/tianweichao92/local-tools/main/tool
 
 ## 6. 本机路径探测与命令生成
 
-公开脚本不得包含 `/Users/tianweichao`、`/opt/homebrew/bin/claude` 等个人路径。
+公开脚本不得包含 `/Users/your-name` 一类个人主目录路径或预设的单机 Claude 路径；常见安装位置仅可作为运行时探测候选。
 
 安装流程按以下顺序解析环境：
 
